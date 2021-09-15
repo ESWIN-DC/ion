@@ -6,6 +6,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
 	log "github.com/pion/ion-log"
@@ -14,14 +15,18 @@ import (
 )
 
 var (
+	buildstamp = ""
+	githash    = ""
+	goversion  = fmt.Sprintf("%s %s/%s", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+
 	conf = islb.Config{}
 	file string
 )
 
-func showHelp() {
-	fmt.Printf("Usage:%s {params}\n", os.Args[0])
-	fmt.Println("      -c {config file}")
-	fmt.Println("      -h (show help info)")
+func version() {
+	fmt.Printf("Git Commit Hash: %s\n", githash)
+	fmt.Printf("UTC Build Time:  %s\n", buildstamp)
+	fmt.Printf("Golang Version:  %s\n", goversion)
 }
 
 func load() bool {
@@ -48,23 +53,24 @@ func load() bool {
 }
 
 func parse() bool {
+	v := flag.Bool("v", false, "show version info")
 	flag.StringVar(&file, "c", "configs/islb.toml", "config file")
-	help := flag.Bool("h", false, "help info")
 	flag.Parse()
+
+	if *v {
+		version()
+		return false
+	}
+
 	if !load() {
 		return false
 	}
 
-	if *help {
-		showHelp()
-		return false
-	}
 	return true
 }
 
 func main() {
 	if !parse() {
-		showHelp()
 		os.Exit(-1)
 	}
 

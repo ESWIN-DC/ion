@@ -1,5 +1,4 @@
-GO_LDFLAGS = -ldflags "-s -w"
-GO_VERSION = 1.14
+GO_LDFLAGS="-s -w -X 'main.goversion=`go version`' -X 'main.buildstamp=`date -u "+%Y-%m-%d_%I:%M:%S%p"`' -X 'main.githash=`git describe --tags 2>/dev/null`'"
 GO_TESTPKGS:=$(shell go list ./... | grep -v cmd | grep -v conf | grep -v node)
 GO_COVERPKGS:=$(shell echo $(GO_TESTPKGS) | paste -s -d ',')
 TEST_UID:=$(shell id -u)
@@ -11,13 +10,13 @@ go_deps:
 	go mod download
 
 core: go_deps
-	go build -o bin/islb $(GO_LDFLAGS) cmd/islb/main.go
-	go build -o bin/sfu $(GO_LDFLAGS) cmd/sfu/main.go
-	go build -o bin/avp $(GO_LDFLAGS) cmd/avp/main.go
-	go build -o bin/signal $(GO_LDFLAGS) cmd/signal/main.go
+	go build -ldflags $(GO_LDFLAGS) -o bin/islb cmd/islb/main.go
+	go build -ldflags $(GO_LDFLAGS) -o bin/sfu cmd/sfu/main.go
+	go build -ldflags $(GO_LDFLAGS) -o bin/avp cmd/avp/main.go
+	go build -ldflags $(GO_LDFLAGS) -o bin/signal cmd/signal/main.go
 
 app:
-	go build -o bin/app-biz $(GO_LDFLAGS) apps/biz/main.go
+	go build -ldflags $(GO_LDFLAGS) -o bin/app-biz apps/biz/main.go
 
 clean:
 	rm -rf bin
