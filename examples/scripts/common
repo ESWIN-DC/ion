@@ -169,5 +169,3 @@ function uz()
     esac
     echol "success:$@"
 }
-
-

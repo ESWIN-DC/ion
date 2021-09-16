@@ -9,7 +9,7 @@ ACTION=$1
 show_help()
 {
     echo ""
-    echo "Usage: ./all {start|stop|restart}"
+    echo "Usage: ./all {start_deps|start|stop|restart}"
     echo ""
 }
 
@@ -18,14 +18,17 @@ if [[ $# -ne 1 ]] ; then
     exit 1
 fi
 
-function start()
+function start_deps()
 {
     echo "------------nats-server--------------"
     $APP_DIR/scripts/deps start nats-server
 
     echo "------------redis--------------"
     $APP_DIR/scripts/deps start redis
+}
 
+function start()
+{
     echo "------------islb--------------"
     $APP_DIR/scripts/service start islb
 
@@ -60,7 +63,11 @@ function stop()
 
     echo "------------avp--------------"
     $APP_DIR/scripts/service stop avp
+}
 
+
+function stop_deps()
+{
     echo "------------nats-server--------------"
     $APP_DIR/scripts/deps stop nats-server
 
@@ -70,9 +77,14 @@ function stop()
     echo "--------------------------"
 }
 
-if [[ "$ACTION" != "start" && "$ACTION" != "stop" && "$ACTION" != "restart" ]]; then
+if [[ "$ACTION" != "start_deps" && "$ACTION" != "start" && "$ACTION" != "stop" && "$ACTION" != "restart" ]]; then
     show_help
     exit 1
+fi
+
+if [[ "$ACTION" == "start_deps" ]]; then
+    start_deps
+    exit 0
 fi
 
 if [[ "$ACTION" == "start" ]]; then
@@ -90,5 +102,3 @@ if [[ "$ACTION" == "restart" ]]; then
     start
     exit 0
 fi
-
-

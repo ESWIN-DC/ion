@@ -1,17 +1,14 @@
 #!/bin/bash
 #set -eux
 
-APP_DIR=$(cd `dirname $0`/../; pwd)
-cd $APP_DIR
-mkdir -p $APP_DIR/logs
-SERVICE=$1
-#COMMAND=$APP_DIR/bin/$SERVICE
-# CONFIG=$APP_DIR/configs/$SERVICE.toml
-# PID_FILE=$APP_DIR/configs/$SERVICE.pid
-# LOG_FILE=$APP_DIR/logs/$SERVICE.log
+TOP_DIR=$(cd `dirname $0`/../..; pwd)
+CFG_DIR="${TOP_DIR}/examples/configs"
+LOG_DIR="${TOP_DIR}/examples/logs"
 
 ACTION=$1
 SERVICE=$2
+
+mkdir -p ${LOG_DIR}
 
 show_help()
 {
@@ -27,10 +24,10 @@ fi
 
 function start()
 {
-    COMMAND=$APP_DIR/bin/$1
-    CONFIG=$APP_DIR/configs/$SERVICE.toml
-    PID_FILE=$APP_DIR/configs/$SERVICE.pid
-    LOG_FILE=$APP_DIR/logs/$SERVICE.log
+    COMMAND=${TOP_DIR}/bin/$1
+    CONFIG=${CFG_DIR}/$SERVICE.toml
+    PID_FILE=${CFG_DIR}/$SERVICE.pid
+    LOG_FILE=${LOG_DIR}/$SERVICE.log
 
     count=`ps -ef |grep " $COMMAND " |grep -v "grep" |wc -l`
     if [ 0 != $count ];then
@@ -40,20 +37,16 @@ function start()
     fi
 
     if [ ! -r $CONFIG ]; then
-        echo "$CONFIG not exsist"
+        echo "$CONFIG does not exist"
         exit 1;
     fi
 
-    BUILD_PATH=$APP_DIR/cmd/$SERVICE
-    if [[ "$SERVICE" =~ app-* ]]; then
-        BUILD_PATH=$APP_DIR/apps/${SERVICE: 4}
+    if [[ ! -f $COMMAND ]]; then
+        echo "$COMMAND does not exist."
+        exit 1
     fi
-    cd $BUILD_PATH
-    echo "go build -o $COMMAND"
-    go build -o $COMMAND
-    cd $APP_DIR
 
-    echo "nohup $COMMAND -c $CONFIG >$LOG_FILE 2>&1 &"
+    echo "nohup $COMMAND -c $CONFIG > $LOG_FILE 2>&1 &"
     nohup $COMMAND -c $CONFIG >$LOG_FILE 2>&1 &
     pid=$!
     echo "$pid" > $PID_FILE
@@ -65,8 +58,9 @@ function start()
     fi
 }
 
-function stop(){
-    PID_FILE=$APP_DIR/configs/$1.pid
+function stop()
+{
+    PID_FILE=${CFG_DIR}/$1.pid
     echo "$PID_FILE......"
 
     echo "stop $SERVICE..."

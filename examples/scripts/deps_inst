@@ -29,4 +29,3 @@ fi
 if [[ "$OS_TYPE" =~ "Darwin" ]];then
     brew install redis nats-server
 fi
-
