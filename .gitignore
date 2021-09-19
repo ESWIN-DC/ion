@@ -18,3 +18,12 @@ cmd/avp/avp
 node_modules/
 cover.out
 .DS_Store
+apps/biz/proto/biz.pb.go
+proto/debug/debug.pb.go
+proto/ion/ion.pb.go
+proto/islb/islb.pb.go
+proto/rtc/rtc.pb.go
+proto/sfu/sfu.pb.go
+proto/islb/islb_grpc.pb.go
+proto/rtc/rtc_grpc.pb.go
+proto/sfu/sfu_grpc.pb.go
