@@ -13,7 +13,7 @@ message Debugging {
 }
 
 message IonError {
-    int32 errorCode = 1;
-    string description = 2;
-    optional Debugging debugging = 3;
+  int32 errorCode = 1;
+  string description = 2;
+  optional Debugging debugging = 3;
 }
