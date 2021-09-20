@@ -2,11 +2,7 @@
 bin
 examples/configs/cert.pem
 examples/configs/key.pem
-examples/configs/islb.pid
-examples/configs/node.pid
-examples/configs/biz.pid
-examples/configs/sfu.pid
-examples/configs/avp.pid
+examples/configs/*.pid
 examples/logs
 cmd/biz/biz
 cmd/sfu/sfu
