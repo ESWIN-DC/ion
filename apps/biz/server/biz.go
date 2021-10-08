@@ -113,7 +113,10 @@ func (b *BIZ) Start(conf Config) error {
 
 // Close all
 func (b *BIZ) Close() {
-	b.s.close()
+	if b.s != nil {
+		b.s.close()
+	}
+
 	b.Node.Close()
 }
 
